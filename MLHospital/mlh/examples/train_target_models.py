@@ -21,6 +21,9 @@ np.random.seed(0)
 torch.set_num_threads(1)
 
 
+from model_parameters.dropout.utils import build_model
+
+
 def parse_args():
     parser = argparse.ArgumentParser('argument for training')
 
@@ -57,6 +60,15 @@ def parse_args():
     parser.add_argument('--log_path', type=str,
                         default='./save', help='data_path')
 
+
+    #################newly added##############
+    #TODO dropout and stochastic depth drop rate; set at most one to non-zero
+    parser.add_argument('--dropout', type=float, default=0, metavar='PCT',
+                        help='Drop path rate (default: 0.0)')
+    parser.add_argument('--drop_path', type=float, default=0, metavar='PCT',
+                        help='Drop path rate (default: 0.0)')
+
+
     args = parser.parse_args()
 
     args.input_shape = [int(item) for item in args.input_shape.split(',')]
@@ -67,8 +79,11 @@ def parse_args():
 
 def get_target_model(name="resnet18", num_classes=10):
     if name == "resnet18":
+        print('model: resnet18')
         model = torchvision.models.resnet18()
         model.fc = nn.Sequential(nn.Linear(512, 10))
+    elif name == 'vision_transformer':
+        model = build_model(parse_args())
     else:
         raise ValueError("Model not implemented yet :P")
     return model

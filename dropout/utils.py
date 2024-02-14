@@ -541,9 +541,10 @@ def build_model(args):
             )
     else:
         model = create_model(
-            args.model, 
+            args.model,
             pretrained=False, 
-            num_classes=args.nb_classes, 
+            #num_classes=args.nb_classes,
+            num_classes = args.num_class,
             drop_path_rate=args.drop_path,
             drop_rate =args.dropout
             )
